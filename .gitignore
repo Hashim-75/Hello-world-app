@@ -1,0 +1,16 @@
+# Editor settings
+.vscode/
+
+# Helm packaged charts and logs
+*.tgz
+*.log
+
+# Secrets and cluster credentials
+.env
+kubeconfig*
+*.pem
+*.key
+
+# OS clutter
+.DS_Store
+Thumbs.db

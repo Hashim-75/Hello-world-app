@@ -1,0 +1,34 @@
+grafana:
+  adminPassword: admin          # local use only
+  defaultDashboardsTimezone: browser
+
+prometheus:
+  prometheusSpec:
+    # Let Prometheus discover ServiceMonitors/rules from any namespace
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+    ruleSelectorNilUsesHelmValues: false
+
+# These control-plane components aren't scrapeable on Docker Desktop
+kubeEtcd:
+  enabled: false
+kubeControllerManager:
+  enabled: false
+kubeScheduler:
+  enabled: false
+kubeProxy:
+  enabled: false
+
+# Avoids a mount error from node-exporter on Docker Desktop
+prometheus-node-exporter:
+  hostRootFsMount:
+    enabled: false
+
+    grafana:
+  adminPassword: admin
+  defaultDashboardsTimezone: browser
+  additionalDataSources:
+    - name: Loki
+      type: loki
+      access: proxy
+      url: http://loki.monitoring:3100

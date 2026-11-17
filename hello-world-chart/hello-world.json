@@ -1,0 +1,16 @@
+{
+  "title": "Hello World App",
+  "uid": "hello-world",
+  "schemaVersion": 39,
+  "refresh": "10s",
+  "time": { "from": "now-15m", "to": "now" },
+  "panels": [
+    { "id": 1, "type": "stat", "title": "Pods up", "gridPos": { "h": 4, "w": 8, "x": 0, "y": 0 }, "datasource": { "type": "prometheus", "uid": "prometheus" }, "targets": [ { "refId": "A", "expr": "sum(up{namespace=\"hello\",service=\"hello-world\"})" } ] },
+    { "id": 2, "type": "stat", "title": "Requests per second", "gridPos": { "h": 4, "w": 8, "x": 8, "y": 0 }, "datasource": { "type": "prometheus", "uid": "prometheus" }, "fieldConfig": { "defaults": { "unit": "reqps" } }, "targets": [ { "refId": "A", "expr": "sum(rate(http_requests_total{namespace=\"hello\"}[1m]))" } ] },
+    { "id": 3, "type": "stat", "title": "Error ratio (5xx)", "gridPos": { "h": 4, "w": 8, "x": 16, "y": 0 }, "datasource": { "type": "prometheus", "uid": "prometheus" }, "fieldConfig": { "defaults": { "unit": "percentunit" } }, "targets": [ { "refId": "A", "expr": "sum(rate(http_requests_total{namespace=\"hello\",code=~\"5..\"}[1m])) / sum(rate(http_requests_total{namespace=\"hello\"}[1m]))" } ] },
+    { "id": 4, "type": "timeseries", "title": "Request rate by status code", "gridPos": { "h": 8, "w": 12, "x": 0, "y": 4 }, "datasource": { "type": "prometheus", "uid": "prometheus" }, "fieldConfig": { "defaults": { "unit": "reqps" } }, "targets": [ { "refId": "A", "legendFormat": "{{code}}", "expr": "sum by (code) (rate(http_requests_total{namespace=\"hello\"}[1m]))" } ] },
+    { "id": 5, "type": "timeseries", "title": "p95 request latency", "gridPos": { "h": 8, "w": 12, "x": 12, "y": 4 }, "datasource": { "type": "prometheus", "uid": "prometheus" }, "fieldConfig": { "defaults": { "unit": "s" } }, "targets": [ { "refId": "A", "legendFormat": "p95", "expr": "histogram_quantile(0.95, sum by (le) (rate(http_request_duration_seconds_bucket{namespace=\"hello\"}[1m])))" } ] },
+    { "id": 6, "type": "timeseries", "title": "CPU usage per pod", "gridPos": { "h": 8, "w": 12, "x": 0, "y": 12 }, "datasource": { "type": "prometheus", "uid": "prometheus" }, "fieldConfig": { "defaults": { "unit": "none" } }, "targets": [ { "refId": "A", "legendFormat": "{{pod}}", "expr": "sum by (pod) (rate(container_cpu_usage_seconds_total{namespace=\"hello\",container=\"app\"}[1m]))" } ] },
+    { "id": 7, "type": "timeseries", "title": "Memory usage per pod", "gridPos": { "h": 8, "w": 12, "x": 12, "y": 12 }, "datasource": { "type": "prometheus", "uid": "prometheus" }, "fieldConfig": { "defaults": { "unit": "bytes" } }, "targets": [ { "refId": "A", "legendFormat": "{{pod}}", "expr": "sum by (pod) (container_memory_working_set_bytes{namespace=\"hello\",container=\"app\"})" } ] }
+  ]
+}
